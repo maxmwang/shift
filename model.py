@@ -20,7 +20,7 @@ def to_transaction(date, account, description, amount):
 
 
 class TransactionCategorizer:
-    EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+    EMBEDDING_MODEL = "sentence-transformers/all-mpnet-base-v2"
     K = 10  # number of neighbors for k-NN
 
     def __init__(
@@ -169,7 +169,7 @@ def load_model() -> TransactionCategorizer:
 if __name__ == "__main__":
     df, categories = load_data()
 
-    df = df.sample(fraction=1, shuffle=True)
+    df = df.sample(fraction=1, shuffle=True, seed=42)
     training_size = int(0.9 * len(df))
     training_df, testing_df = df.head(
         training_size), df.head(-training_size)
@@ -194,9 +194,6 @@ if __name__ == "__main__":
 
         if predicted_label == true_label:
             correct += 1
-        else:
-            print(
-                f"{transaction}, {true_label}, {list(predictions)}")
 
     accuracy = correct / total if total > 0 else 0
-    print(f"Accuracy: {accuracy:.2%}")
+    log.info(f"Accuracy: {accuracy:.2%}")

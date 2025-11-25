@@ -106,6 +106,14 @@ class Shift(App):
 
         self.log(self.stylesheet)
 
+    def __row_to_transaction(self, row: List) -> str:
+        return to_transaction(
+            date=row[self.__get_column_index("Posted Date")].plain,
+            account=row[self.__get_column_index("Account")].plain,
+            description=row[self.__get_column_index("Description")].plain,
+            amount=row[self.__get_column_index("Amount")].plain,
+        )
+
     async def on_list_view_selected(self, event: ListView.Selected) -> None:
         if event.item:
             cursor_row, _ = self.data_table.cursor_coordinate
@@ -114,12 +122,7 @@ class Shift(App):
 
             self.data_table.update_cell_at(coordinate, selected_category)
             row = self.data_table.get_row_at(cursor_row)
-            transaction = to_transaction(
-                date=row[self.__get_column_index("Posted Date")],
-                account=row[self.__get_column_index("Account")],
-                description=row[self.__get_column_index("Description")],
-                amount=row[self.__get_column_index("Amount")],
-            )
+            transaction = self.__row_to_transaction(row)
             self.transaction_categorizer.add(
                 transaction=transaction,
                 label=selected_category
@@ -150,18 +153,23 @@ class Shift(App):
 
         # update transaction details widget
         info_text = ""
-        max_width = len(max(self.columns, key=lambda x: len(x[0]))[0]) + 2
+        max_width = self.query_one("#transaction-details").size.width
+        longest_col_name = max(self.columns, key=lambda x: len(x[0]))[0]
+        spaces_after_colon = 4
+        subsequent_intent = ' ' * \
+            (len(longest_col_name) + 1 + spaces_after_colon)
         for (col_name, _), value in zip(self.columns, row):
-            padding = max_width - len(f"{col_name}:")
+            padding = len(longest_col_name) - \
+                len(col_name) + spaces_after_colon
             label = f"[u]{col_name}:[/u]" + " " * padding
-            value_text = textwrap.fill(str(
-                value or ''), width=80 - max_width - 8, subsequent_indent=' ' * (max_width + 8))
-            info_text += f"{label}\t{value_text}\n"
+            value_text = textwrap.fill(
+                str(value or ''), width=max_width - len(label), subsequent_indent=subsequent_intent)
+            info_text += f"{label}{value_text}\n"
         self.row_info.update(info_text)
 
         # update category list view
-        next_description = row[self.__get_column_index("Description")]
-        predictions = self.transaction_categorizer.predict(next_description)
+        transaction = self.__row_to_transaction(row)
+        predictions = self.transaction_categorizer.predict(transaction)
         self.categories = [
             (self.to_list_view_label(label, confidence), label) for label, confidence in predictions]
 
@@ -175,8 +183,7 @@ class Shift(App):
 
         async with aiofiles.open("out.csv", "w", encoding="utf-8", newline="") as f:
             writer = aiocsv.AsyncWriter(f)
-            for column, _ in self.columns:
-                await writer.writerow([column])
+            await writer.writerow([column for column, _ in self.columns])
             for row_index in range(len(self.data_table.rows)):
                 row = self.data_table.get_row_at(row_index)
                 await writer.writerow(row)
