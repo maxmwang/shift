@@ -40,9 +40,8 @@ class Shift(App):
         """Initialize the app with optional initial state.
 
         Args:
-            transaction_categorizer: A function that returns a TransactionCategorizer instance
-            categories: Set of categories
-            table_data: A Dict with `'columns'` (list of column names) and `'rows'` (list of tuples)
+            transaction_categorizer: A TransactionCategorizer instance
+            table_data: A list of tuples representing the table rows
         """
         super().__init__(**kwargs)
         self.transaction_categorizer = transaction_categorizer

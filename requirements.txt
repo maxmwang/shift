@@ -1,3 +1,4 @@
+python==3.10.19
 aiocsv==1.4.0
 aiofiles==25.1.0
 faiss==1.9.0
