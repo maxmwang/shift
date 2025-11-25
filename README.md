@@ -1,4 +1,4 @@
-# shift!
+# shift
 
 Financial account transaction categorizing tool with AI-powered suggestions. 
 
