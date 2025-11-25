@@ -18,7 +18,7 @@ class LoadingScreen(ModalScreen):
         yield LoadingIndicator()
 
 
-class MyApp(App):
+class Shift(App):
     CSS_PATH = "style.tcss"
 
     BINDINGS = [
@@ -71,7 +71,14 @@ class MyApp(App):
 
         for column_name, width in self.columns:
             self.data_table.add_column(column_name, width=width)
-        self.data_table.add_rows(self.table_data)
+        for posted_date, account, description, category, amount in self.table_data:
+            self.data_table.add_row(
+                Text(posted_date),
+                Text(account, overflow="ellipsis"),
+                Text(description, overflow="ellipsis"),
+                Text(category or ""),
+                Text(amount, justify="right")
+            )
 
         self.list_view = ListView(id="category-list", classes="border")
         self.list_view.border_title = "Category Selector"
@@ -220,6 +227,16 @@ def load_input():
         "Amount",
     ])
 
+    if df["Amount"].dtype == pl.String:
+        df = df.with_columns(
+            pl.col("Amount").str.replace_all(r"[$,]", "").cast(pl.Float64)
+        )
+
+    df = df.with_columns(
+        pl.col("Amount").cast(pl.Float64).map_elements(
+            lambda x: f"${x:.2f}", return_dtype=pl.String)
+    )
+
     return [tuple(row) for row in df.to_numpy()]
 
 
@@ -227,5 +244,5 @@ if __name__ == "__main__":
     model = load_model()
     input_data = load_input()
 
-    app = MyApp(transaction_categorizer=model, table_data=input_data)
+    app = Shift(transaction_categorizer=model, table_data=input_data)
     app.run()
