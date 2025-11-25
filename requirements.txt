@@ -1,0 +1,9 @@
+aiocsv==1.4.0
+aiofiles==25.1.0
+faiss==1.9.0
+fastexcel==0.17.2
+numpy==1.26.4
+polars==1.35.2
+rich==14.2.0
+sentence-transformers==5.1.2
+textual==6.6.0

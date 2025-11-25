@@ -1,0 +1,151 @@
+/* Catppuccin Mocha Theme */
+$base: #1e1e2e;
+$mantle: #181825;
+$crust: #11111b;
+
+$text: #cdd6f4;
+$subtext1: #bac2de;
+$subtext0: #a6adc8;
+
+$overlay2: #9399b2;
+$overlay1: #7f849c;
+$overlay0: #6c7086;
+
+$surface2: #585b70;
+$surface1: #45475a;
+$surface0: #313244;
+
+$rosewater: #f5e0dc;
+$flamingo: #f2cdcd;
+$pink: #f5c2e7;
+$mauve: #cba6f7;
+$red: #f38ba8;
+$maroon: #eba0ac;
+$peach: #fab387;
+$yellow: #f9e2af;
+$green: #a6e3a1;
+$teal: #94e2d5;
+$sky: #89dceb;
+$sapphire: #74c7ec;
+$blue: #89b4fa;
+$lavender: #b4befe;
+
+Screen {
+    background: $base;
+    color: $text;
+}
+
+* {
+    text-style: bold;
+    scrollbar-background: $base;
+    scrollbar-color: $surface2;
+}
+
+.border {
+    border: round $mauve;
+    background: $base;
+    color: $text;
+}
+
+DataTable {
+    background: $blue;
+    color: $text;
+
+    &:focus {
+        layer: default;
+        border-title-color: $blue;
+    }
+
+    .datatable--header {
+        background: $surface0;
+        color: $mauve;
+
+        &:hover {
+            background: $surface1;
+            color: $text;
+        }
+    }
+    .datatable--header-hover {
+        background: $surface1;
+        color: $text;
+    }
+
+    .datatable--cursor {
+        background: $blue;
+        color: $text;
+    }
+}
+
+ListView,
+ListView:focus {
+    background: $base;
+    color: $text;
+    background-tint: 0%;
+
+    & > ListItem {
+        color: $foreground;
+        height: auto;
+        overflow: hidden hidden;
+        width: 1fr;
+
+        &.-hovered {
+            background: $surface1;
+            color: $text;
+        }
+
+        &.-highlight {
+            background: $blue;
+            color: $text;
+        }
+    }
+}
+
+Footer {
+    background: $mantle;
+    color: $subtext0;
+
+    .footer--key {
+        background: $surface0;
+        color: $mauve;
+    }
+
+    .footer--highlight {
+        background: $surface1;
+        color: $text;
+    }
+}
+
+LoadingScreen {
+    background: $base 80%;
+    align: center middle;
+}
+
+LoadingIndicator {
+    color: $mauve;
+}
+
+Toast {
+    background: $surface0;
+    color: $text;
+    border: round $mauve;
+    padding: 1 2;
+}
+
+#top-container {
+    width: 100%;
+}
+
+#category-list {
+    width: 1fr;
+    height: 100%;
+}
+
+#transaction-details {
+    width: 2fr;
+    height: 100%;
+    text-wrap: wrap;
+}
+
+#transaction-table {
+    height: 2fr;
+}
